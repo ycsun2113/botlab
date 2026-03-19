@@ -35,15 +35,10 @@ mbot_lcm_msgs::path2D_t search_for_path(mbot_lcm_msgs::pose2D_t start,
         open_list.push(startNode);
         
         double kid_g_cost = 0.0;
-        // Node* current_node;
         int iter = 0;
 
         while(!open_list.empty()){
-            // iter += 1;
-            // if(iter >= 30000){
-            //     found_path = false;
-            //     break;
-            // }
+
 
             Node* current_node = open_list.pop();
 
@@ -124,13 +119,7 @@ double g_cost(Node* from, Node* goal, const ObstacleDistanceGrid& distances, con
     double move_cost = diag ? std::sqrt(2) : 1.0;
     g_cost += move_cost;
 
-    // g_cost += (dx + dy) + (std::sqrt(2) - 2.0) * std::min(dx, dy);
-
     double goal_to_obs = distances(goal->cell.x, goal->cell.y);
-    // double from_to_obs = distances(from->cell.x, from->cell.y);
-
-    // pow(maxDistanceWithCost / cellDistance, distanceCostExponent)
-    // for cellDistance > minDistanceToObstacle && cellDistance < maxDistanceWithCost
 
     if(goal_to_obs > params.minDistanceToObstacle*1.01 && goal_to_obs < params.maxDistanceWithCost){
         obs_cost += pow(params.maxDistanceWithCost/goal_to_obs, params.distanceCostExponent);

@@ -243,10 +243,6 @@ int8_t Exploration::executeExploringMap(bool initialize)
     /// TODO: Implement logic for finding and selecting 
     //        the next frontier to explore and planning the path to it.
 
-    // if(!initialize){
-    //     std::cerr << "ERROR: Not initialized!";
-    //     return mbot_lcm_msgs::exploration_status_t::STATE_FAILED_EXPLORATION;
-    // }
     if(initialize){
         frontiers_.clear();
         currentPath_.path.clear();
@@ -263,16 +259,11 @@ int8_t Exploration::executeExploringMap(bool initialize)
     if(currentTarget_.x != 0 || currentTarget_.y!=0){
         dist_to_goal = sqrt(pow(currentPose_.x - currentTarget_.x, 2) + pow(currentPose_.y - currentTarget_.y, 2));
     }
-    // else{
-    //     dist_to_goal = 0.0;
-    // }
 
     if(dist_to_goal <= reach_thres && !frontiers_.empty()){
-    // if(!frontiers_.empty()){
         frontier_processing_t frontiers_info = plan_path_to_frontier(frontiers_, currentPose_, currentMap_, planner_);
         currentPath_ = frontiers_info.path_selected;
         if(currentPath_.path_length > 1){
-            // currentPath_ = frontiers_info.path_selected;
             currentTarget_ = currentPath_.path[currentPath_.path_length - 1];
         }
     }
@@ -289,7 +280,6 @@ int8_t Exploration::executeExploringMap(bool initialize)
     status.utime = utime_now();
     status.state = mbot_lcm_msgs::exploration_status_t::STATE_EXPLORING_MAP;
 
-    // usleep(2000000);
     
     if(frontiers_.empty()){
         usleep(3000000);

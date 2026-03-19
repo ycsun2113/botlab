@@ -92,22 +92,14 @@ mbot_lcm_msgs::particle_t ActionModel::applyAction(const mbot_lcm_msgs::particle
     // Make sure you create a new valid particle_t. Don't forget to set the new time and new parent_pose.
     mbot_lcm_msgs::particle_t newSample = sample;
     
-    // double sampleRot1 = std::normal_distribution<double>(rot1_, rot1Std_)(numberGenerator_);
-    // double sampleTrans = std::normal_distribution<double>(trans_, transStd_)(numberGenerator_);
-    // double sampleRot2 = std::normal_distribution<double>(rot2_, rot2Std_)(numberGenerator_);
     double sampleRot1 = std::normal_distribution<double>(0.0, rot1Std_)(numberGenerator_);
     double sampleTrans = std::normal_distribution<double>(0.0, transStd_)(numberGenerator_);
     double sampleRot2 = std::normal_distribution<double>(0.0, rot2Std_)(numberGenerator_);
 
-    // double rot1_hat = rot1_ - sampleRot1;
     double rot1_hat = angle_diff(rot1_, sampleRot1);
     double trans_hat = trans_ - sampleTrans;
-    // double rot2_hat = rot2_ - sampleRot2;
     double rot2_hat = angle_diff(rot2_, sampleRot2);
 
-    // newSample.pose.x += sampleTrans * cos(sample.pose.theta + sampleRot1);
-    // newSample.pose.y += sampleTrans * sin(sample.pose.theta + sampleRot1);
-    // newSample.pose.theta  = wrap_to_pi(sample.pose.theta + sampleRot1 + sampleRot2);
     newSample.pose.x += trans_hat * cos(sample.pose.theta + rot1_hat);
     newSample.pose.y += trans_hat * sin(sample.pose.theta + rot1_hat);
     newSample.pose.theta  = wrap_to_pi(sample.pose.theta + rot1_hat + rot2_hat);

@@ -45,20 +45,8 @@ void ParticleFilter::initializeFilterRandomly(const OccupancyGrid& map)
     RandomPoseSampler rd_sampler(map.bounds());
     
     for(auto& p : posterior_){
-        // mbot_lcm_msgs::pose2D_t rd_pose = rd_sampler.get_pose();
         p = rd_sampler.get_particle(map);
         p.weight = sampleWeight;
-        // bool valideParticle = false;
-        // while(!valideParticle){
-        //     RandomPoseSampler rd_sampler(map.bounds());
-        //     mbot_lcm_msgs::pose2D_t rd_pose = rd_sampler.get_pose();
-        //     if(map.isCellInGrid(rd_pose.x, rd_pose.y) && map.logOdds(rd_pose.x, rd_pose.y) < 0){
-        //         p.pose = rd_pose;
-        //         p.pose.theta = wrap_to_pi(rd_pose.theta);
-        //         p.weight = sampleWeight;
-        //     }
-        // }
-        
     }
 
 }
@@ -73,7 +61,6 @@ mbot_lcm_msgs::pose2D_t ParticleFilter::updateFilter(const mbot_lcm_msgs::pose2D
                                                         const mbot_lcm_msgs::lidar_t& laser,
                                                         const OccupancyGrid& map)
 {
-    // auto start_time = std::chrono::high_resolution_clock::now();
 
     bool hasRobotMoved = actionModel_.updateAction(odometry);
 
@@ -86,18 +73,6 @@ mbot_lcm_msgs::pose2D_t ParticleFilter::updateFilter(const mbot_lcm_msgs::pose2D
 
     posteriorPose_.utime = odometry.utime;
 
-    // auto end_time = std::chrono::high_resolution_clock::now();
-    // std::chrono::duration<double> update_time = end_time - start_time;
-    // std::cout << update_time.count() << std::endl;
-
-    // Save update time to CSV file
-    // std::ofstream csv_file("p1000_update_times.csv", std::ios::app);  // Open in append mode
-    // if (csv_file.is_open()) {
-    //     csv_file << update_time.count() << "\n";
-    //     csv_file.close();
-    // } else {
-    //     std::cerr << "Failed to open CSV file for writing!" << std::endl;
-    // }
 
     return posteriorPose_;
 }
@@ -175,26 +150,7 @@ ParticleList ParticleFilter::resamplePosteriorDistribution(const bool keep_best,
     }
     
     return resample;
-    // ParticleList prior = posterior_;
-    // double sampleWeight = 1.0 / (double)kNumParticles_;
-    // std::random_device rd;
-    // std::mt19937 generator(rd());
-    // std::normal_distribution<double> dist(0.0, 0.01);
-    // // std::uniform_real_distribution<double> dist(0.0, sampleWeight);
-
-    // for(auto& p : prior){
-    //     p.pose.x = posteriorPose_.x + dist(generator);
-    //     p.pose.y = posteriorPose_.y + dist(generator);
-    //     p.pose.theta = posteriorPose_.theta + dist(generator);
-    //     p.pose.utime = posteriorPose_.utime;
-    //     p.parent_pose = posteriorPose_;
-    //     p.weight = sampleWeight;
-    // }
     
-    // return prior;
-    
-    
-    // return ParticleList();  // Placeholder
 }
 
 
@@ -219,7 +175,7 @@ void ParticleFilter::reinvigoratePriorDistribution(ParticleList& prior)
 
     }
 
-    // Augmentation: randomize any unreasonable samples
+    // === Augmentation: randomize any unreasonable samples ===
     // if(map != nullptr)
     // {
     //     for (int i = 0; i < prior.size(); i++)
